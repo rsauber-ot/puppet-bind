@@ -38,6 +38,9 @@ options {
     listen-on-v6 port <%= @listen_on_v6_port %> { <%= @listen_on_v6_addr.join("; ") %>; };
 <% end -%>
 <% if !@forwarders.empty? -%>
+  <% if @forward_only -%>
+  forward only;
+  <% end -%>
     forwarders { <%= @forwarders.join("; ") %>; };
 <% end -%>
     directory "<%= @directory %>";
@@ -90,6 +93,7 @@ options {
     dnssec-enable <%= @dnssec_enable %>;
     dnssec-validation <%= @dnssec_validation %>;
     dnssec-lookaside <%= @dnssec_lookaside %>;
+    querylog no;
 
     /* Path to ISC DLV key */
     bindkeys-file "/etc/named.iscdlv.key";
@@ -180,6 +184,13 @@ logging {
         severity dynamic;
         print-time yes;
     };
+    channel queries_log {
+        file "/var/log/named/queries" versions 600 size 200m;
+        print-time yes;
+        print-category yes;
+        print-severity yes;
+        severity info;
+     };
 
     category default { default_file; };
     category general { general_file; };
@@ -202,7 +213,7 @@ logging {
 <% if !@views.empty? -%>
 
 <% @views.sort_by {|key,value| key}.each do |key,value| -%>
-<% valid_keys = %w(allow-notify allow-query allow-recursion allow-transfer allow-update-forwarding forwarders match-clients match-destinations match-recursive-only) -%>
+<% valid_keys = %w(allow-notify allow-query allow-recursion allow-transfer allow-update-forwarding forward forwarders match-clients match-destinations match-recursive-only) -%>
 view "<%= key %>" {
 <% valid_keys.sort.each do |valid_key| -%>
 <% if value[valid_key] and !value[valid_key].empty? -%>
