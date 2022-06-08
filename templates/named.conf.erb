@@ -184,8 +184,8 @@ logging {
         severity dynamic;
         print-time yes;
     };
-    channel queries_log {
-        file "/var/log/named/queries" versions 600 size 200m;
+    channel queries_file {
+        file "/var/log/named/queries.log" versions 8 size 200m;
         print-time yes;
         print-category yes;
         print-severity yes;
@@ -203,7 +203,7 @@ logging {
     category notify { notify_file; };
     category client { client_file; };
     category unmatched { unmatched_file; };
-    category queries { null; };
+    category queries { queries_file; };
     category network { network_file; };
     category update { update_file; };
     category dispatch { dispatch_file; };
