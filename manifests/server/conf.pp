@@ -129,6 +129,16 @@ define bind::server::conf (
   $file_rfc1912 = $::bind::params::file_rfc1912
   $file_bindkeys = $::bind::params::file_bindkeys
 
+  service { 'apparmor':
+    ensure => 'running',
+    enable => 'true',
+  }
+
+  file { '/etc/apparmor.d/usr.sbin.named':
+    notify  => Service['apparmor'],
+    content => template('bind/usr.sbin.named.erb'),
+  }
+
   # Everything is inside a single template
   file { $title:
     notify  => Class['::bind::service'],
