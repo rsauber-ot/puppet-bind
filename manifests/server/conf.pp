@@ -104,8 +104,6 @@ define bind::server::conf (
   $allow_transfer         = [],
   $check_names            = [],
   $extra_options          = {},
-  $dnssec_enable          = 'yes',
-  $dnssec_validation      = 'yes',
   $dnssec_lookaside       = 'auto',
   $zones                  = {},
   $includes               = [],
