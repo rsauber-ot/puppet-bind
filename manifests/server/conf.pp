@@ -130,16 +130,6 @@ define bind::server::conf (
     mode    => 'ug=rw,o=r', 
   }
 
-  service { 'apparmor':
-    ensure => 'running',
-    enable => 'true',
-  }
-
-  file { '/etc/apparmor.d/usr.sbin.named': 
-    notify  => Service['apparmor'],
-    content => template('bind/usr.sbin.named.erb'), 
-  }
-
   file { $title:
     notify  => Class['bind::service'],
     content => template('bind/named.conf.erb'),
